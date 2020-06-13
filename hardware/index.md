@@ -1,3 +1,5 @@
+[<< Back to Main Page](../)
+
 # Hardware Overview
 
 The following is a general overview of hardware present in the DMG GameBoy. More detailed explanations of each component can be viewed by clicking on the header of the component.
