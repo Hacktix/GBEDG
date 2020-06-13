@@ -14,3 +14,13 @@ This documentation is intended to assist with development of emulators for the o
 4) Now it's time to test what you've made. It's practically impossible to implement everything correctly on the first try, so a good bit of debugging should be expected. Also, following these [CPU Testing Guidelines](cputest) may help in finding issues easier and faster.
 
 **TODO: Extend list**
+
+## Quick Reference
+
+[Hardware Overview](hardware)
+
+[CPU Structure](cpu)
+
+[Memory Bank Controllers](mbcs)
+
+[CPU Testing Guidelines](cputest)
