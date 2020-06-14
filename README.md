@@ -24,3 +24,5 @@ This documentation is intended to assist with development of emulators for the o
 [Memory Bank Controllers](mbcs)
 
 [CPU Testing Guidelines](cputest)
+
+[Timers - Explained in Detail](timers)
