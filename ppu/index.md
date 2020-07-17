@@ -120,4 +120,4 @@ This is due to an oddity with the background fetcher. It starts operating as usu
 
 ##### Timing Visualization
 
-![pixelfifo_bg](C:\Users\MikaFreak\Desktop\GBEDG\ppu\pixelfifo_bg.png)
+![pixelfifo_bg](./pixelfifo_bg.png)
