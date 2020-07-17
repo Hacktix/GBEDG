@@ -32,9 +32,9 @@ The PPU operates in 4 different modes, the timing of which is visualized in the 
 
 ![img](https://github.com/corybsa/pandocs/raw/develop/content/imgs/game-boy-lcd-refresh-diagram.png)
 
-### 153 Scanlines?
+### 154 Scanlines?
 
-According to the diagram above, during the rendering of one frame the PPU handles a total of 153 scanlines, even though the LCD display only has 144 rows. This is due to what's known as VBlank Mode, which adds 10 pseudo-scanlines to the bottom of the frame where nothing is actually rendered and the PPU is effectively paused. More information on that shortly.
+According to the diagram above, during the rendering of one frame the PPU handles a total of 154 scanlines, even though the LCD display only has 144 rows. This is due to what's known as VBlank Mode, which adds 10 pseudo-scanlines to the bottom of the frame where nothing is actually rendered and the PPU is effectively paused. More information on that shortly.
 
 ### Mode 2 - OAM Search
 
