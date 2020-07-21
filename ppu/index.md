@@ -2,6 +2,8 @@
 
 # The PPU
 
+[TOC]
+
 ## An Introduction
 
 The PPU (which stands for Picture Processing Unit) is the part of the GameBoy that's responsible for everything you see on screen and more and possibly the second most integral part of the whole machine right after the CPU. While it is technically less complex than the CPU, it's a lot more tricky and less unambiguously documented, which is why I'm hoping to provide an easy and quick to understand summary of everything here.
@@ -121,3 +123,7 @@ This is due to an oddity with the background fetcher. It starts operating as usu
 ##### Timing Visualization
 
 ![pixelfifo_bg](./pixelfifo_bg.png)
+
+
+
+
