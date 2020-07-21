@@ -203,6 +203,16 @@ If any of the above conditions isn't met the sprite pixel is discarded and the p
 
 After the fetching and merging process is finished, both background/window fetching and LCD shifting are resumed as normal, unless there is another sprite in the OAM buffer at the same X coordinates. Details [here.](#sprites-with-an-equal-x-position)
 
+##### Pixel Merging - Visualized
+
+Sprite-Attribute Bit 7 not set:
+
+![pixelfifo_merge_priority_unset](.\pixelfifo_merge_priority_unset.png)
+
+Sprite-Attribute Bit 7 set:
+
+![pixelfifo_merge_priority_set](.\pixelfifo_merge_priority_set.png)
+
 **Interesting sidenote:** The fact that sprite pixels which are already in FIFO cannot be overwritten explains why most documentations (including the Pandocs) explain sprite-to-sprite priority with "the sprite with lower X-coordinate has priority" - the sprite pixels are fetched earlier the lower the X-coordinate is, and as sprite pixels in FIFO cannot be overwritten, any other sprite pixels that *would* be merged are not, resulting in the first sprite taking priority.
 
 #### Sprites with an equal X-Position
