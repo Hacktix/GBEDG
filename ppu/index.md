@@ -128,6 +128,8 @@ The fetcher internally keeps track of which tile it is fetching (I will refer to
 * **Cycle 5-6:** The fetcher reads the upper 8 bits of the 8-pixel-row data.
 * **Cycle 7-8:** The fetcher pushes the 8 pixels onto Pixel FIFO.
 
+**Note:** *Technically* the fetcher attempts to push its 8 fetched pixels onto FIFO at the end of Cycle 6 already, however, as the PPU can't shift out pixels fast enough to allow for this, the fetcher only succeeds at this at the end of cycle 8.
+
 #### Combining Fetching and Drawing
 
 Now that we know how to fetch background pixels we can start combining them with the drawing logic.
