@@ -31,6 +31,7 @@
     + [Sprite Pixel Fetching](#sprite-pixel-fetching)
     + [Sprites with an equal X-Position](#sprites-with-an-equal-x-position)
     + [Sprites with X < 8](#sprites-with-x---8)
+    + [Timing Visualization](#timing-visualization-2)
 
 ## An Introduction
 
@@ -214,3 +215,8 @@ If the X-position of the sprite is < 8, fetching first occurs as expected. Howev
 
 **Note:** The fetching process for sprites with an X-Position < 8 starts immediately after the first background/window tile is pushed onto FIFO, as shifting pixels to LCD before fetching sprite data would yield incorrect results.
 
+#### Timing Visualization
+
+Assuming that on the current scanline there is one sprite with an X-Position of 19 (meaning sprite fetching would begin after shifting out the 10th pixel), the following timing would occur:
+
+![pixelfifo_sprite](.\pixelfifo_sprite.png)
