@@ -126,4 +126,14 @@ This is due to an oddity with the background fetcher. It starts operating as usu
 
 
 
+#### Window Rendering
 
+With background rendering working correctly, window rendering isn't much of a challenge. The window effectively acts as a "restart" of the fetcher. Before anything - bit 5 of LCDC ($FF40) must be set for anything following to take place.
+
+When a pixel is shifted out onto LCD, and the X-Coordinate which the next pixel would be rendered at is equal to WX - 7, the "window reset" starts. The fetcher is reset entirely to its first step, anything that has already been fetched is discarded, the Pixel FIFO is cleared and internally a switch is flipped that tells the fetcher to, from now on, fetch window tiles rather than background tiles. However, as the fetcher needs to fully restart fetching, rendering is paused for a total of 6 T-cycles on every scanline when encountering a window. This extends the total time needed by Mode 3 by 6 T-cycles as well.
+
+##### Timing Visualization
+
+Assuming that WX = 107, the following timing would occur:
+
+![pixelfifo_window](.\pixelfifo_window.png)
