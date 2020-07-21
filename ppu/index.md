@@ -2,7 +2,30 @@
 
 # The PPU
 
-[TOC]
+- [The PPU](#the-ppu)
+  * [An Introduction](#an-introduction)
+  * [A Word of Warning](#a-word-of-warning)
+  * [The Basics](#the-basics)
+    + [The Screen](#the-screen)
+    + [What's Shown on Screen](#what-s-shown-on-screen)
+    + [The Tech Behind It](#the-tech-behind-it)
+  * [PPU Modes](#ppu-modes)
+    + [154 Scanlines?](#154-scanlines-)
+    + [Mode 2 - OAM Search](#mode-2---oam-search)
+    + [Mode 3 - Drawing](#mode-3---drawing)
+    + [Mode 0 - HBlank](#mode-0---hblank)
+    + [Mode 1 - VBlank](#mode-1---vblank)
+  * [The Pixel FIFO](#the-pixel-fifo)
+    + [FIFO Operation](#fifo-operation)
+      - [What's a Pixel?](#what-s-a-pixel-)
+      - [Pixel Data](#pixel-data)
+    + [Background Rendering](#background-rendering)
+      - [Background Pixel Fetching](#background-pixel-fetching)
+      - [Combining Fetching and Drawing](#combining-fetching-and-drawing)
+      - [The first-tile oddity](#the-first-tile-oddity)
+      - [Timing Visualization](#timing-visualization)
+    + [Window Rendering](#window-rendering)
+      - [Timing Visualization](#timing-visualization-1)
 
 ## An Introduction
 
@@ -89,11 +112,11 @@ As mentioned before, GameBoy graphics work with 8x8 pixel tiles which are stored
 
 A great explanation of how 2 bytes make up a row of 8 pixels can be found [here](https://www.huderlem.com/demos/gameboy2bpp.html). (TODO: Write own description)
 
-#### Background Rendering
+### Background Rendering
 
 The simplest utilization of the Pixel FIFO is basic background rendering. No sprites, no window, just background. Here we'll get to know the Fetcher a little more and look into how it operates in detail.
 
-##### Background Pixel Fetching
+#### Background Pixel Fetching
 
 Once the OAM Scan is done, background pixel fetching begins. And, usually, this process keeps repeating over and over until the scanline is fully rendered. Fetching 8 pixels and pushing them to Pixel FIFO takes a total of 8 T-cycles.
 
@@ -104,7 +127,7 @@ The fetcher internally keeps track of which tile it is fetching (I will refer to
 * **Cycle 5-6:** The fetcher reads the upper 8 bits of the 8-pixel-row data.
 * **Cycle 7-8:** The fetcher pushes the 8 pixels onto Pixel FIFO.
 
-##### Combining Fetching and Drawing
+#### Combining Fetching and Drawing
 
 Now that we know how to fetch background pixels we can start combining them with the drawing logic.
 
@@ -114,25 +137,25 @@ On the 8th cycle the fetcher resets and another pixel is shifted out onto LCD, l
 
 Once it has reached the 160th pixel the PPU resets everything Pixel FIFO-related. It clears anything that's left in FIFO and fully resets the fetcher to its initial state at the beginning of the scanline in order to get it ready for the next scanline.
 
-##### The first-tile oddity
+#### The first-tile oddity
 
 Doing the math, the drawing mode, when only drawing background tiles, should take 166 T-cycles per scanline. However, the minimum amount of cycles needed for Mode 3 is 172. Why?
 
 This is due to an oddity with the background fetcher. It starts operating as usual at the start of the scanline, reading the tile number, the lower and the upper 8 bits of tile data. However, it discards all data it fetched and restarts itself without pushing any data to the FIFO. This adds the 6 T-cycles to the beginning of Mode 3, adding it up to 172 cycles.
 
-##### Timing Visualization
+#### Timing Visualization
 
 ![pixelfifo_bg](./pixelfifo_bg.png)
 
 
 
-#### Window Rendering
+### Window Rendering
 
 With background rendering working correctly, window rendering isn't much of a challenge. The window effectively acts as a "restart" of the fetcher. Before anything - bit 5 of LCDC ($FF40) must be set for anything following to take place.
 
 When a pixel is shifted out onto LCD, and the X-Coordinate which the next pixel would be rendered at is equal to WX - 7, the "window reset" starts. The fetcher is reset entirely to its first step, anything that has already been fetched is discarded, the Pixel FIFO is cleared and internally a switch is flipped that tells the fetcher to, from now on, fetch window tiles rather than background tiles. However, as the fetcher needs to fully restart fetching, rendering is paused for a total of 6 T-cycles on every scanline when encountering a window. This extends the total time needed by Mode 3 by 6 T-cycles as well.
 
-##### Timing Visualization
+#### Timing Visualization
 
 Assuming that WX = 107, the following timing would occur:
 
