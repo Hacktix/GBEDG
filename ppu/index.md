@@ -27,6 +27,10 @@
     + [Low WX Values](#low-wx-values)
     + [Changing WX Mid-Scanline](#changing-wx-mid-scanline)
     + [Timing Visualization](#timing-visualization-1)
+  * [Sprite Rendering](#sprite-rendering)
+    + [Sprite Pixel Fetching](#sprite-pixel-fetching)
+    + [Sprites with an equal X-Position](#sprites-with-an-equal-x-position)
+    + [Sprites with X < 8](#sprites-with-x---8)
 
 ## An Introduction
 
@@ -35,6 +39,8 @@ The PPU (which stands for Picture Processing Unit) is the part of the GameBoy th
 ## A Word of Warning
 
 I want to be clear about one thing: This documentation is most likely not 100% fully accurate. It's a combination of information from various sources as well as experiences I've personally made while developing my emulator. If you find anything off, please do contact me personally on Discord (Optix™#1337) or create a PR.
+
+**Also,** the current version of this documentation focuses only on DMG emulation, no CGB or SGB features are considered.
 
 ## The Basics
 
@@ -173,3 +179,38 @@ If the value of the WX register is changed mid-scanline, the PPU will keep fetch
 Assuming that WX = 107, the following timing would occur:
 
 ![pixelfifo_window](.\pixelfifo_window.png)
+
+### Sprite Rendering
+
+A general prerequisite for sprite rendering to occur is bit 1 of LCDC ($FF40) being set. If this is the case, the PPU will search through the OAM buffer which was filled during Mode 2 to check if there are any sprites at this position. (Note that the sprite's X-coordinate in memory is 8 lower than its actual position on screen, meaning an X-coordinate of 0 is off-screen and an X-coordinate of 8 renders the sprite at the leftmost side of the screen). If there are, multiple things occur:
+
+* Shifting pixels out to LCD is paused
+* Fetching background/window pixels is paused
+* The sprite fetcher (separate to the background/window fetcher) is started
+
+#### Sprite Pixel Fetching
+
+Fetching sprite pixels works effectively the same as fetching background or window pixels. However, the pixels aren't pushed to FIFO directly. Each of the 8 sprite pixels is compared to the pixel currently in FIFO at the same index - the first sprite pixel is compared to the pixel that would be shifted to LCD next, the second to the one after that and so on.
+
+This process is commonly referred to as "merging". A sprite pixel replaces the pixel it is being compared to if the following conditions all apply:
+
+* The pixel in FIFO is not already a sprite pixel
+* The color number of the sprite pixel is not zero
+* If Sprite Attribute Bit 7 is set: The color number of the pixel in FIFO is equal to zero
+
+If any of the above conditions isn't met the sprite pixel is discarded and the pixel in FIFO stays, otherwise the pixel in FIFO is overwritten by the sprite pixel.
+
+After the fetching and merging process is finished, both background/window fetching and LCD shifting are resumed as normal, unless there is another sprite in the OAM buffer at the same X coordinates. Details [here.](#sprites-with-an-equal-x-position)
+
+**Interesting sidenote:** The fact that sprite pixels which are already in FIFO cannot be overwritten explains why most documentations (including the Pandocs) explain sprite-to-sprite priority with "the sprite with lower X-coordinate has priority" - the sprite pixels are fetched earlier the lower the X-coordinate is, and as sprite pixels in FIFO cannot be overwritten, any other sprite pixels that *would* be merged are not, resulting in the first sprite taking priority.
+
+#### Sprites with an equal X-Position
+
+In the case of two sprites being loaded into the OAM buffer which have the same X-Position, only the first in the list is actually rendered (assuming the OAM buffer is ordered from lowest memory address to highest). *Technically* it wouldn't be necessary to restart the pixel fetcher for any sprite at the same X-Position other than the first, as all sprite pixels will be discarded in the merging process. However, all sprites at the same X-Position should still occupy the fetcher for 6 T-cycles each. **(Todo: Confirm this)**
+
+#### Sprites with X < 8
+
+If the X-position of the sprite is < 8, fetching first occurs as expected. However, before merging the sprite pixels with FIFO, 8 - X pixels are discarded. For example: X = 2, the fetcher fetches all 8 pixels and discards 8-2 = 6 of them, leaving 2 pixels to be merged onto FIFO.
+
+**Note:** The fetching process for sprites with an X-Position < 8 starts immediately after the first background/window tile is pushed onto FIFO, as shifting pixels to LCD before fetching sprite data would yield incorrect results.
+
