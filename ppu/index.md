@@ -2,30 +2,31 @@
 
 # The PPU
 
-- [The PPU](#the-ppu)
-  * [An Introduction](#an-introduction)
-  * [A Word of Warning](#a-word-of-warning)
-  * [The Basics](#the-basics)
-    + [The Screen](#the-screen)
-    + [What's Shown on Screen](#what-s-shown-on-screen)
-    + [The Tech Behind It](#the-tech-behind-it)
-  * [PPU Modes](#ppu-modes)
-    + [154 Scanlines?](#154-scanlines-)
-    + [Mode 2 - OAM Search](#mode-2---oam-search)
-    + [Mode 3 - Drawing](#mode-3---drawing)
-    + [Mode 0 - HBlank](#mode-0---hblank)
-    + [Mode 1 - VBlank](#mode-1---vblank)
-  * [The Pixel FIFO](#the-pixel-fifo)
-    + [FIFO Operation](#fifo-operation)
-      - [What's a Pixel?](#what-s-a-pixel-)
-      - [Pixel Data](#pixel-data)
-    + [Background Rendering](#background-rendering)
-      - [Background Pixel Fetching](#background-pixel-fetching)
-      - [Combining Fetching and Drawing](#combining-fetching-and-drawing)
-      - [The first-tile oddity](#the-first-tile-oddity)
-      - [Timing Visualization](#timing-visualization)
-    + [Window Rendering](#window-rendering)
-      - [Timing Visualization](#timing-visualization-1)
+- [An Introduction](#an-introduction)
+- [A Word of Warning](#a-word-of-warning)
+- [The Basics](#the-basics)
+  * [The Screen](#the-screen)
+  * [What's Shown on Screen](#what-s-shown-on-screen)
+  * [The Tech Behind It](#the-tech-behind-it)
+- [PPU Modes](#ppu-modes)
+  * [154 Scanlines?](#154-scanlines-)
+  * [Mode 2 - OAM Search](#mode-2---oam-search)
+  * [Mode 3 - Drawing](#mode-3---drawing)
+  * [Mode 0 - HBlank](#mode-0---hblank)
+  * [Mode 1 - VBlank](#mode-1---vblank)
+- [The Pixel FIFO](#the-pixel-fifo)
+  * [FIFO Operation](#fifo-operation)
+    + [What's a Pixel?](#what-s-a-pixel-)
+    + [Pixel Data](#pixel-data)
+  * [Background Rendering](#background-rendering)
+    + [Background Pixel Fetching](#background-pixel-fetching)
+    + [Combining Fetching and Drawing](#combining-fetching-and-drawing)
+    + [The first-tile oddity](#the-first-tile-oddity)
+    + [Timing Visualization](#timing-visualization)
+  * [Window Rendering](#window-rendering)
+    + [Low WX Values](#low-wx-values)
+    + [Changing WX Mid-Scanline](#changing-wx-mid-scanline)
+    + [Timing Visualization](#timing-visualization-1)
 
 ## An Introduction
 
@@ -154,6 +155,16 @@ This is due to an oddity with the background fetcher. It starts operating as usu
 With background rendering working correctly, window rendering isn't much of a challenge. The window effectively acts as a "restart" of the fetcher. Before anything - bit 5 of LCDC ($FF40) must be set for anything following to take place.
 
 When a pixel is shifted out onto LCD, and the X-Coordinate which the next pixel would be rendered at is equal to WX - 7, the "window reset" starts. The fetcher is reset entirely to its first step, anything that has already been fetched is discarded, the Pixel FIFO is cleared and internally a switch is flipped that tells the fetcher to, from now on, fetch window tiles rather than background tiles. However, as the fetcher needs to fully restart fetching, rendering is paused for a total of 6 T-cycles on every scanline when encountering a window. This extends the total time needed by Mode 3 by 6 T-cycles as well.
+
+#### Low WX Values
+
+If WX is between 0 and 7 the fetcher never enters "background fetching" mode and goes straight to fetching window tiles, effectively bypassing the 6-cycle delay that would occur when switching from background to window.
+
+#### Changing WX Mid-Scanline
+
+(**Warning:** This section may not be accurate due to a lack of unambiguous documentation)
+
+If the value of the WX register is changed mid-scanline, the PPU will keep fetching window tiles and pushing them to the LCD. When the X-coordinate of the currently fetched pixel hits WX - 7 again, a background pixel with a color value of 0 is pushed onto the FIFO.
 
 #### Timing Visualization
 
