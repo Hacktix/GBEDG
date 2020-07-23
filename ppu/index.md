@@ -147,6 +147,18 @@ On the 8th cycle the fetcher resets and another pixel is shifted out onto LCD, l
 
 Once it has reached the 160th pixel the PPU resets everything Pixel FIFO-related. It clears anything that's left in FIFO and fully resets the fetcher to its initial state at the beginning of the scanline in order to get it ready for the next scanline.
 
+#### Background Scrolling
+
+An offset for the background can be set using the SCY ($FF42) and SCX ($FF43) registers. These registers are used to "shift" the background up and left respectively.
+
+When fetching tile numbers, SCY is simply added to the value of LY in order to calculate the memory address of the target tile. Keep in mind that the background loops around again, so effectively `(SCY + LY) mod 256` is used.
+
+Horizontal scrolling is a little more tricky. `SCX mod 8 == 0` is the most basic case - for every increment of 8 the tile selection is shifted on tile to the right. Keep in mind that the background loops around horizontally as well.
+
+If `SCX mod 8` is not equal to zero, the fetcher just ignores it and fetches tiles the same way it otherwise would. The scroll effect is achieved by, instead of shifting all pixels to screen, discarding `SCX mod 8` pixels into the void at the very start of the scanline. This means that an SCX value that is not a multiple of 8 will extend mode 3 duration by `SCX mod 8` T-cycles. Mid-scanline modification of SCX can affect the fetcher if it's changed to another multiple of 8, but any other changes will have no effect.
+
+![pixelfifo_scx_mod_8](.\pixelfifo_scx_mod_8.png)
+
 #### The first-tile oddity
 
 Doing the math, the drawing mode, when only drawing background tiles, should take 166 T-cycles per scanline. However, the minimum amount of cycles needed for Mode 3 is 172. Why?
