@@ -21,6 +21,7 @@
   * [Background Rendering](#background-rendering)
     + [Background Pixel Fetching](#background-pixel-fetching)
     + [Combining Fetching and Drawing](#combining-fetching-and-drawing)
+    + [Background Scrolling](#background-scrolling)
     + [The first-tile oddity](#the-first-tile-oddity)
     + [Timing Visualization](#timing-visualization)
   * [Window Rendering](#window-rendering)
@@ -29,9 +30,12 @@
     + [Timing Visualization](#timing-visualization-1)
   * [Sprite Rendering](#sprite-rendering)
     + [Sprite Pixel Fetching](#sprite-pixel-fetching)
+      - [Pixel Merging - Visualized](#pixel-merging---visualized)
     + [Sprites with an equal X-Position](#sprites-with-an-equal-x-position)
     + [Sprites with X < 8](#sprites-with-x---8)
     + [Timing Visualization](#timing-visualization-2)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## An Introduction
 
