@@ -8,9 +8,9 @@ Memory Bank Controllers (most commonly abbreviated to MBCs) are pieces of hardwa
 
 - [How to detect a ROMs MBC](#how-to-detect-a-roms-mbc)
 - [Additional Hardware](#additional-hardware)
-  * [None / Plain ROM](#none---plain-rom)
-  * [(Battery-Buffered) RAM](#-battery-buffered--ram)
-  * [Real Time Clock (RTC)](#real-time-clock--rtc-)
+  * [None / Plain ROM](#none--plain-rom)
+  * [(Battery-Buffered) RAM](#battery-buffered-ram)
+  * [Real Time Clock (RTC)](#real-time-clock-rtc)
   * [Rumble](#rumble)
   * [Accelerometer](#accelerometer)
 - [Storage Sizes](#storage-sizes)
@@ -103,6 +103,7 @@ An identifier representing the ROM size is stored in the ROM file at address $01
 | 0x54     | 1.5MB (1,572,864 Bytes) | 96 Banks                        |
 
 **Wait, what are ROM banks?**
+
 ROM banks are effectively 16KB "batches" of memory which can be mapped to a certain addressing space individually. With MBC1 for example the memory region $4000 to $7FFF can be mapped to (almost) any 16KB block of the ROM.
 
 ### RAM Size
@@ -121,6 +122,7 @@ The header also contains an identifier representing the size of however much ext
 ## How to handle incorrect header data
 
 1) Except for some specific edge cases, you can't
+
 2) You don't really need to
 
 Any Nintendo-licensed game contains proper header data, and even a lot of bootleg games do. Even if the data is wrong - that's a corrupt ROM file, not an issue with the emulator.
