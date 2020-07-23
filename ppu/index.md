@@ -21,6 +21,7 @@
   * [Background Rendering](#background-rendering)
     + [Background Pixel Fetching](#background-pixel-fetching)
     + [Combining Fetching and Drawing](#combining-fetching-and-drawing)
+    + [Background Scrolling](#background-scrolling)
     + [The first-tile oddity](#the-first-tile-oddity)
     + [Timing Visualization](#timing-visualization)
   * [Window Rendering](#window-rendering)
@@ -29,9 +30,12 @@
     + [Timing Visualization](#timing-visualization-1)
   * [Sprite Rendering](#sprite-rendering)
     + [Sprite Pixel Fetching](#sprite-pixel-fetching)
+      - [Pixel Merging - Visualized](#pixel-merging---visualized)
     + [Sprites with an equal X-Position](#sprites-with-an-equal-x-position)
     + [Sprites with X < 8](#sprites-with-x---8)
     + [Timing Visualization](#timing-visualization-2)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## An Introduction
 
@@ -146,6 +150,18 @@ The first 6 T-Cycles of the scanline nothing is drawn, as the Pixel FIFO is stil
 On the 8th cycle the fetcher resets and another pixel is shifted out onto LCD, leaving 6 more pixels in FIFO. These are shifted out every T-cycle, while the fetcher runs through its first 6 fetching cycles. Then again, on the 12th cycle total, the fetcher pushes 8 more pixels to FIFO, one of which is again shifted to LCD in the same cycle. This cycle continues over and over until the PPU shifts out the 160th pixel.
 
 Once it has reached the 160th pixel the PPU resets everything Pixel FIFO-related. It clears anything that's left in FIFO and fully resets the fetcher to its initial state at the beginning of the scanline in order to get it ready for the next scanline.
+
+#### Background Scrolling
+
+An offset for the background can be set using the SCY ($FF42) and SCX ($FF43) registers. These registers are used to "shift" the background up and left respectively.
+
+When fetching tile numbers, SCY is simply added to the value of LY before calculating the memory address of the target tile (temporarily, LY isn't modified). Keep in mind that the background loops around again, so effectively `(SCY + LY) mod 256` is used.
+
+Horizontal scrolling is a little more tricky. `SCX mod 8 == 0` is the most basic case - for every increment of 8 the tile selection is shifted one tile to the right. Keep in mind that the background loops around horizontally as well.
+
+If `SCX mod 8` is not equal to zero, the fetcher just ignores it and fetches tiles the same way it otherwise would. The scroll effect is achieved by, instead of shifting all pixels to screen, discarding `SCX mod 8` pixels at the very start of the scanline. This means that an SCX value that is not a multiple of 8 will extend mode 3 duration by `SCX mod 8` T-cycles. Mid-scanline modification of SCX can affect the fetcher if it's changed to another multiple of 8, but any other changes will have no effect.
+
+![pixelfifo_scx_mod_8](.\pixelfifo_scx_mod_8.png)
 
 #### The first-tile oddity
 
