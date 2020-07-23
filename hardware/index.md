@@ -16,7 +16,7 @@ The GameBoy uses 16-bit addressing, allowing for addressing from $0000 to $FFFF.
 
 MBCs are chips that are built into game cartridges in order to extend the basic functionality of the GameBoy hardware. This is mostly in regards to storage space, allowing for games larger than 32Kb, as well as external RAM which can be battery-powered in order to provide the ability to save games and highscores.
 
-## Timers
+## [Timers](../timers)
 
 The GameBoy features multiple I/O registers which are responsible for timer-related tasks. These are linked to the main CPU clock, however, there are some oddities in their implementation, which is why they are explained separately in this documentation.
 
@@ -24,6 +24,6 @@ The GameBoy features multiple I/O registers which are responsible for timer-rela
 
 The DMG GameBoy features a 160x144 pixel screen supporting four different shades of gray. It is refreshed at a rate of approximately 59.73Hz, which amounts to almost 60FPS.
 
-## PPU (Picture Processing Unit)
+## [PPU (Picture Processing Unit)](../ppu)
 
 The PPU of the GameBoy is responsible for putting together and outputting graphics onto the LCD screen. It is treated as separate hardware from the CPU and is possibly the most challenging part of emulating the GameBoy in a hardware-accurate manner.
