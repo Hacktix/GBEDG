@@ -9,7 +9,7 @@ The MBC5 is a relatively common MBC with high storage capabilities, supporting u
 The MBC needs to keep track of the following values:
 
 * **ROM Bank Number:** Unsigned 9-bit number which determines which 16KB blocks of ROM are mapped to the memory region $4000 - $7FFF.
-* **RAM Bank Number:** Unsigned 8-bit number which determines which 8KB block of external RAM are mapped to the memory region $A000 - $BFFF.
+* **RAM Bank Number:** Unsigned 4-bit number which determines which 8KB block of external RAM are mapped to the memory region $A000 - $BFFF.
 
 If the MBC has a battery (MBC type identifier $1B or $1E), the state of external RAM should be stored to a file when the emulator closes and reloaded once it starts the same game again.
 
