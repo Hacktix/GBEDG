@@ -47,7 +47,7 @@ Writing to a memory address between $6000 and $7FFF will set the Mode Flag to th
 
 Writing to a memory address between $A000 and $BFFF will write to external RAM if it is enabled. If it is not, the write is ignored.
 
-The address in external RAM to which the value is written to depends on the total RAM size as well as the RAM bank number. If the total RAM size is either 2KB or 8KB, the address is simply `ADDRESS - 0xA000`.
+The address in external RAM to which the value is written to depends on the total RAM size as well as the RAM bank number. If the total RAM size is either 2KB or 8KB, the address is simply `(ADDRESS - 0xA000) mod RAM_SIZE`.
 
 If the total RAM size is 32KB (4 RAM banks) and the Mode Flag is set to 1, the address is calculated as follows: `0x2000 * RAM_BANK_NUMBER + (ADDRESS - 0xA000)`. If the Mode Flag is set to 0, the address is `ADDRESS - 0xA000`.
 
@@ -67,7 +67,7 @@ Reading from a memory address between $4000 and $7FFF, no matter what state the 
 
 Reading from a memory address between $4000 and $7FFF returns a value from external RAM if it is enabled. If it is not, 0xFF is read.
 
-The address in external RAM which is read from depends on the total RAM size as well as the RAM bank number. If the total RAM size is either 2KB or 8KB, the address is simply `ADDRESS - 0xA000`.
+The address in external RAM which is read from depends on the total RAM size as well as the RAM bank number. If the total RAM size is either 2KB or 8KB, the address is simply `(ADDRESS - 0xA000) mod RAM_SIZE`.
 
 If the total RAM size is 32KB (4 RAM banks) and the Mode Flag is set to 1, the address is calculated as follows: `0x2000 * RAM_BANK_NUMBER + (ADDRESS - 0xA000)`. If the Mode Flag is set to 0 the address is `ADDRESS - 0xA000`.
 
