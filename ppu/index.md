@@ -35,8 +35,6 @@
     + [Sprites with X < 8](#sprites-with-x---8)
     + [Timing Visualization](#timing-visualization-2)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
 ## An Introduction
 
 The PPU (which stands for Picture Processing Unit) is the part of the GameBoy that's responsible for everything you see on screen and more and possibly the second most integral part of the whole machine right after the CPU. While it is technically less complex than the CPU, it's a lot more tricky and less unambiguously documented, which is why I'm hoping to provide an easy and quick to understand summary of everything here.
@@ -233,7 +231,7 @@ Sprite-Attribute Bit 7 set:
 
 #### Sprites with an equal X-Position
 
-In the case of two sprites being loaded into the OAM buffer which have the same X-Position, only the first in the list is actually rendered (assuming the OAM buffer is ordered from lowest memory address to highest). *Technically* it wouldn't be necessary to restart the pixel fetcher for any sprite at the same X-Position other than the first, as all sprite pixels will be discarded in the merging process. However, all sprites at the same X-Position should still occupy the fetcher for 6 T-cycles each. **(Todo: Confirm this)**
+In the case of two (or more) sprites being loaded into the OAM buffer which have the same X-Position, sprite fetching still occurs as normal. When the first sprite is finishes fetching, the fetching process for the following sprite is started again with the next T-cycle without shifting any pixels to LCD.
 
 #### Sprites with X < 8
 
