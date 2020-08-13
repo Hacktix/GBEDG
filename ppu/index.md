@@ -101,7 +101,7 @@ VBlank mode takes up all scanlines from 144 to 153 (zero-based) and effectively 
 
 ### Turning on LCD
 
-On the first scanline after enabling LCD (where LY = 0) the mode loop behaves differently than usual. The first 80 T-cycles of the scanline the STAT register does not show Mode 2, as would be expected. Instead, for the first 76 T-cycles the mode bits in the STAT register have the value 0, which would represent HBlank. Also note that under these conditions mode 3 is entered after 76 T-cycles rather than the usual 80. This "shortened" period of what should be OAM scanning is not balanced out by the remaining drawing or HBlank modes either. The processing of this scanline takes 4 T-cycles less than all others.
+On the first scanline after enabling LCD (where LY = 0) the mode loop behaves differently than usual. For the first 80 T-cycles of the scanline the STAT register does not show Mode 2, as would be expected. Instead, for the first 76 T-cycles the mode bits in the STAT register have the value 0, which would represent HBlank. Also note that under these conditions mode 3 is entered after 76 T-cycles rather than the usual 80. This "shortened" period of what should be OAM scanning is not balanced out by the remaining drawing or HBlank modes either. The processing of this scanline takes 4 T-cycles less than all others.
 
 ## The Pixel FIFO
 
