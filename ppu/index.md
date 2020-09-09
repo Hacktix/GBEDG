@@ -57,3 +57,9 @@ The Background is a 32x32 tile grid (=256x256 pixels) in which Tiles can be plac
 The Window is the same as the Background in that it is another 32x32 tile grid which Tiles can be placed on. However, it can be seen as a sort of "overlay" over the background, the position of which can be determined using WX and WY registers, which will also be explained later on.
 
 ![grid_win](./grid_win.png)
+
+#### Sprites
+
+Sprites are effectively just 8x8 (or, if certain options are set, 8x16) pixel tiles which are not limited by the background/window grid. Sprite data is stored in the OAM section of memory which can fit up to 40 sprites.
+
+![grid_sprites](./grid_sprites.png)
