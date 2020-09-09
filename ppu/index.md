@@ -43,6 +43,8 @@ In the Gameboy's 2BPP format, 2 bytes make up a row of 8 pixels. Each bit of the
 
 ![gb_2bpp](./gb_2bpp.png)
 
+In memory Tiles are stored as 16 bytes encoded with the method explained above. The first 2 bytes represent the first line of 8 pixels, the next 2 the second line, and so on.
+
 ### Display Layers
 
 The Gameboy display effectively uses three separate layers to display graphics on - the Background, the Window and Sprites.
@@ -64,3 +66,19 @@ The Window is the same as the Background in that it is another 32x32 tile grid w
 Sprites are effectively just 8x8 (or, if certain options are set, 8x16) pixel tiles which are not limited by the background/window grid. Sprite data is stored in the OAM section of memory which can fit up to 40 sprites.
 
 ![grid_sprites](./grid_sprites.png)
+
+### Tile Data
+
+Graphics data encoded in the 2BPP format (explained above) is stored in VRAM at addresses $8000-$97FF and is usually referred to by so-called "Tile Numbers". As each tile takes up 16 bytes of memory, a "Tile Number" is essentially just an index of a 16-byte-block within this section of VRAM. However, there are two different addressing methods the PPU uses:
+
+The **8000 method** uses $8000 as a base pointer and adds `(TILE_NUMBER * 16)` to it, whereas `TILE_NUMBER` is an unsigned 8-bit integer. Thus, the Tile Number `0` would refer to address $8000, `1` would refer to $8010, `2` to $8020 and so on.
+
+The **8800 method** uses $9000 as a base pointer and adds `(SIGNED_TILE_NUMBER * 16)` to it, whereas `SIGNED_TILE_NUMBER` is a signed 8-bit integer. Thus, the tile number `0` would refer to address $9000, `1` would refer to $9010, `2` to $9020 and so on. However, `0xFF` would refer to $8FF0, `0xFE` to $8FE0 and so on.
+
+Which of these addressing methods is used depends on bit 4 of the LCDC register, which will be explained later on as well.
+
+### Background Maps
+
+In order to set which tiles should be displayed in the Background / Window grids, background maps are used. The VRAM sections $9800-$9BFF and $9C00-$9FFF each contain one of these background maps.
+
+A background map consists of 32x32 bytes representing tile numbers organized row by row. This means that the first byte in a background map is the Tile Number of the Tile at the very top left. The byte after is the Tile Number of the Tile to the right of it and so on. The 32nd byte would represent the Tile Number of the leftmost tile in the second tile row.
