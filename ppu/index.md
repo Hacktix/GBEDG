@@ -12,6 +12,8 @@
     + [The Background](#the-background)
     + [The Window](#the-window)
     + [Sprites](#sprites)
+  * [Tile Data](#tile-data)
+  * [Background Maps](#background-maps)
 
 ## An Introduction
 
