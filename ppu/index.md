@@ -11,6 +11,7 @@
   * [Display Layers](#display-layers)
     + [The Background](#the-background)
     + [The Window](#the-window)
+    + [Sprites](#sprites)
 
 ## An Introduction
 
