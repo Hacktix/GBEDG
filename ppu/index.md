@@ -14,6 +14,7 @@
     + [Sprites](#sprites)
   * [Tile Data](#tile-data)
   * [Background Maps](#background-maps)
+  * [OAM Memory](#oam-memory)
 
 # An Introduction
 
