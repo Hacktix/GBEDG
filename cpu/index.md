@@ -13,10 +13,10 @@
     + [STATE](#state)
 
 ## General
-The DMG GameBoy uses an 8-bit Sharp LR35902 CPU, which is a sort of "modified version" of the Z80, intended to fit the lower requirements of a handheld console by using a reduced instruction set.
+The DMG Gameboy uses an 8-bit Sharp LR35902 CPU, which is a sort of "modified version" of the Z80, intended to fit the lower requirements of a handheld console by using a reduced instruction set.
 
 ## The Clock
-The main clock of the GameBoy runs at 4.194304MHz. Within the Emulator Development community, one clock cycle of the 4.19MHz clock is often referred to as a "T-Cycle". Many documentations tend to use the term "cycle" ambiguously, as there are also so-called "M-Cycles", which are a duration of 4 T-Cycles. For the sake of consistency, every use of the term "cycle" in this document refers to a T-Cycle.
+The main clock of the Gameboy runs at 4.194304MHz. Within the Emulator Development community, one clock cycle of the 4.19MHz clock is often referred to as a "T-Cycle". Many documentations tend to use the term "cycle" ambiguously, as there are also so-called "M-Cycles", which are a duration of 4 T-Cycles. For the sake of consistency, every use of the term "cycle" in this document refers to a T-Cycle.
 
 ## Registers and Flags
 The CPU has a total of 10 registers (when counting PC and SP), which are used as follows:

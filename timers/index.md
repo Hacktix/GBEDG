@@ -16,7 +16,7 @@
 
 ## An Introduction
 
-The purpose of timers within the GameBoy is usually to, as the name would suggest, either measure time or execute segments of code in certain periods of time. In the most general terms, the GameBoy timer consists of four Memory-Mapped I/O registers, two which are linked to the CPU clock and constantly incremented, the other used to configure the behavior of these timer registers. However, a fully accurate implementation of these timers requires much more attention to detail than would initially meet the eye. Everything you need to know is explained in the following few paragraphs.
+The purpose of timers within the Gameboy is usually to, as the name would suggest, either measure time or execute segments of code in certain periods of time. In the most general terms, the Gameboy timer consists of four Memory-Mapped I/O registers, two which are linked to the CPU clock and constantly incremented, the other used to configure the behavior of these timer registers. However, a fully accurate implementation of these timers requires much more attention to detail than would initially meet the eye. Everything you need to know is explained in the following few paragraphs.
 
 ## Timer Register Overview
 
@@ -68,7 +68,7 @@ The bit at the determined position is taken from the 16-bit DIV counter and stor
 
 3) The bit taken from the DIV counter is ANDed with the Timer Enable bit. The result of this operation will be referred to as the "AND Result".
 
-The GameBoy searches for a "falling edge" on the AND Result, meaning that it's looking for the value to be `1` in the last cycle, and `0` in the current one. Only if this is the case, the TIMA register is incremented.
+The Gameboy searches for a "falling edge" on the AND Result, meaning that it's looking for the value to be `1` in the last cycle, and `0` in the current one. Only if this is the case, the TIMA register is incremented.
 
 ### An Example
 

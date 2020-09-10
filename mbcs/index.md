@@ -2,7 +2,7 @@
 
 # Memory Bank Controllers (MBCs)
 
-Memory Bank Controllers (most commonly abbreviated to MBCs) are pieces of hardware that are built into the Game Cartridge, not the GameBoy itself. Because storage was very expensive in the era of the GameBoy games had to be small - yet the 32KB limit that the unmodified GameBoy design intended wasn't enough for most games. Additionally, a lot of games would need external hardware such as Real Time Clocks, Rumble or Battery-powered external RAM to store save files. All of these limitations were more or less bypassed by MBCs - additional hardware on the cartridge.
+Memory Bank Controllers (most commonly abbreviated to MBCs) are pieces of hardware that are built into the Game Cartridge, not the Gameboy itself. Because storage was very expensive in the era of the Gameboy games had to be small - yet the 32KB limit that the unmodified Gameboy design intended wasn't enough for most games. Additionally, a lot of games would need external hardware such as Real Time Clocks, Rumble or Battery-powered external RAM to store save files. All of these limitations were more or less bypassed by MBCs - additional hardware on the cartridge.
 
 ## Documented MBCs
 
@@ -27,7 +27,7 @@ Memory Bank Controllers (most commonly abbreviated to MBCs) are pieces of hardwa
 
 In the world of emulators we're not dealing with actual hardware - all we have are ROM files. These provide the data stored on the cartridge, but not the functionality of it - that part has to be emulated.
 
-GameBoy ROMs feature a so-called "Cartridge Header" section in memory which contains all sorts of metadata about the game stored on the cartridge. For the detection of the MBC type the only relevant byte in the ROM file is located at $0147. This byte is an identifier for the individual MBC type as well as the additional hardware on the cartridge, such as external RAM, Real Time Clocks or Rumble.
+Gameboy ROMs feature a so-called "Cartridge Header" section in memory which contains all sorts of metadata about the game stored on the cartridge. For the detection of the MBC type the only relevant byte in the ROM file is located at $0147. This byte is an identifier for the individual MBC type as well as the additional hardware on the cartridge, such as external RAM, Real Time Clocks or Rumble.
 
 | **Code** | **MBC Type**  | **Additional Hardware**                       |
 | -------- | ------------- | --------------------------------------------- |
@@ -70,19 +70,19 @@ In the case of code `0x00` this means that the ROM file is just that - Read Only
 
 ### (Battery-Buffered) RAM
 
-This means that the cartridge has an additional RAM chip inside the cartridge in order to, well, *have more RAM.* As RAM is inherently volatile (meaning the data is lost when the power cuts out) it may be constantly supplied with power by an additional in-cartridge battery. This is called Battery-Buffering and allows for things such as savegames to exist, as the data in Battery-Buffered RAM is preserved even when turning off the GameBoy (or Emulator in this case). Most emulators implement this by using a save file which the RAM data is written to just before the emulator is closed.
+This means that the cartridge has an additional RAM chip inside the cartridge in order to, well, *have more RAM.* As RAM is inherently volatile (meaning the data is lost when the power cuts out) it may be constantly supplied with power by an additional in-cartridge battery. This is called Battery-Buffering and allows for things such as savegames to exist, as the data in Battery-Buffered RAM is preserved even when turning off the Gameboy (or Emulator in this case). Most emulators implement this by using a save file which the RAM data is written to just before the emulator is closed.
 
 ### Real Time Clock (RTC)
 
-A Real Time Clock (often abbreviated to RTC) is dedicated hardware for counting real-time seconds, minutes, hours and days. The RTC that comes with the MBC3 is inherently Battery-Buffered and keeps count of the time even when the GameBoy / Emulator is turned off. Games like Pokemon Silver and Pokemon Gold use these to keep track of the real time to display in game.
+A Real Time Clock (often abbreviated to RTC) is dedicated hardware for counting real-time seconds, minutes, hours and days. The RTC that comes with the MBC3 is inherently Battery-Buffered and keeps count of the time even when the Gameboy / Emulator is turned off. Games like Pokemon Silver and Pokemon Gold use these to keep track of the real time to display in game.
 
 ### Rumble
 
-A small amount of GameBoy games were built with an additional Rumble Pak attached, which would be able to vibrate through specific functions in the games code. **(TODO: Search for Documentation)**
+A small amount of Gameboy games were built with an additional Rumble Pak attached, which would be able to vibrate through specific functions in the games code. **(TODO: Search for Documentation)**
 
 ### Accelerometer
 
-The accelerometer is an MBC7 specific hardware addition which comes packaged with a Rumble Pak (explained above). It allows games to detect the angle at which the physical GameBoy console is being held - a sort of primitive motion control system.
+The accelerometer is an MBC7 specific hardware addition which comes packaged with a Rumble Pak (explained above). It allows games to detect the angle at which the physical Gameboy console is being held - a sort of primitive motion control system.
 
 ## Storage Sizes
 
