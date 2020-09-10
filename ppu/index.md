@@ -170,6 +170,6 @@ This bit controls whether or not sprites are rendered at all. Setting this bit t
 
 ### LCDC.0 - BG/Window Enable
 
-This bit controls whether or not Background and Window tiles are drawn. If it is set to 0, no Background or Window tiles are drawn and all pixels are replaced by white pixels. The only exception to this are sprites, as they are unaffected.
+This bit controls whether or not Background and Window tiles are drawn. If it is set to 0, no Background or Window tiles are drawn and all pixels are drawn as white (Color 0). The only exception to this are sprites, as they are unaffected.
 
 **Note:** This bit has different functionality on the Gameboy Color.
