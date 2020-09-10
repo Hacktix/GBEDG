@@ -84,3 +84,29 @@ Which of these addressing methods is used depends on bit 4 of the LCDC register,
 In order to set which tiles should be displayed in the Background / Window grids, background maps are used. The VRAM sections $9800-$9BFF and $9C00-$9FFF each contain one of these background maps.
 
 A background map consists of 32x32 bytes representing tile numbers organized row by row. This means that the first byte in a background map is the Tile Number of the Tile at the very top left. The byte after is the Tile Number of the Tile to the right of it and so on. The 33rd byte would represent the Tile Number of the leftmost tile in the second tile row.
+
+## OAM Memory
+
+The OAM (standing for "Object Attribute Memory") section of memory ranges from $FE00-$FE9F and contains data used to display Sprites (also known as "Objects") on screen. Each sprite takes up 4 bytes in this section of memory, allowing for a total of 40 sprites to be displayed at any given time. Each entry is structured as follows:
+
+**Byte 0 - Y-Position:** The first byte of each entry represents the vertical position of the sprite on the screen. However, in order to allow sprites to move sprites into the frame from the top smoothly, 16 is subtracted from this value to determine the actual Y-Position. This means that a Y-Position of 16 would place the sprite at the top border of the screen.
+
+**Byte 1 - X-Position:** The second byte represents the horizontal position of the sprite on the screen. Like with the Y-Position, moving sprites into frame smoothly is allowed by subtracting 8 from this value. This means that an X-Position of 8 would place the sprite at the left border of the screen, whereas a value of 0 would fully hide the sprite.
+
+**Byte 2 - Tile Number:** The third byte of each OAM entry represents the Tile Number used for fetching the graphics data for the sprite. Note that sprites always use the "8000 addressing method", so this value is always interpreted as an unsigned 8-bit integer.
+
+**Byte 3 - Sprite Flags:** The last byte of each entry contains bit-flags that can apply certain effects and options to a sprite, as seen here:
+
+```
+Bit 7    OBJ-to-BG Priority
+          0 = Sprite is always rendered above background
+          1 = Background colors 1-3 overlay sprite, sprite is still rendered above color 0
+Bit 6    Y-Flip
+          If set to 1 the sprite is flipped vertically, otherwise rendered as normal
+Bit 5    X-Flip
+          If set to 1 the sprite is flipped horizontally, otherwise rendered as normal
+Bit 4    Palette Number
+          If set to 0, the OBP0 register is used as the palette, otherwise OBP1
+Bit 3-0  CGB-Only flags
+```
+
