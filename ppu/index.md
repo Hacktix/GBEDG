@@ -111,3 +111,65 @@ Bit 4    Palette Number
 Bit 3-0  CGB-Only flags
 ```
 
+# PPU Registers
+
+## LCD Control Register (LCDC : $FF40)
+
+The LCDC register is one of the most important control registers for the LCD. Each of the 8 bits in this register is a flag which determines which elements are displayed and more. The following is an overview over the function of each bit:
+
+```
+Bit 7  LCD Display Enable
+        Setting this bit to 0 disables the PPU entirely. The screen is turned off.
+Bit 6  Window Tile Map Select
+        If set to 1, the Window will use the background map located at $9C00-$9FFF. Otherwise, it uses $9800-$9BFF.
+Bit 5  Window Display Enable
+        Setting this bit to 0 hides the window layer entirely.
+Bit 4  Tile Data Select
+        If set to 1, fetching Tile Data uses the 8000 method. Otherwise, the 8800 method is used.
+Bit 3  BG Tile Map Select
+        If set to 1, the Background will use the background map located at $9C00-$9FFF. Otherwise, it uses $9800-$9BFF.
+Bit 2  Sprite Size
+        If set to 1, sprites are displayed as 1x2 Tile (8x16 pixel) object. Otherwise, they're 1x1 Tile.
+Bit 1  Sprite Enable
+        Sprites are only drawn to screen if this bit is set to 1.
+Bit 0  BG/Window Enable
+        If this bit is set to 0, neither Background nor Window tiles are drawn. Sprites are unaffected.
+```
+
+### LCDC.7 - LCD Display Enable
+
+This bit controls whether or not the PPU is active at all. The PPU only operates while this bit is set to 1. As soon as it is set to 0 the screen goes blank and the PPU stops all operation. The PPU also undergoes a "reset" which will be explained later.
+
+### LCDC.6 - Window Tile Map Select
+
+This bit controls which Background Map is used to determine the tile numbers of the tiles displayed in the Window layer. If it is set to 1, the background map located at $9C00-$9FFF is used, otherwise it uses the one at $9800-$9BFF.
+
+### LCDC.5 - Window Display Enable
+
+This bit controls whether or not the Window layer is rendered at all. If it is set to 0, everything Window-related can be ignored, as it is not rendered. Otherwise the Window renders as normal.
+
+### LCDC.4 - Tile Data Select
+
+This bit determines which addressing mode to use for fetching Tile Data. If it is set to 1, the 8000 method is used. Otherwise, the 8800 method is used. (These methods are explained in the [Tile Data](#tile-data) section above)
+
+### LCDC.3 - BG Tile Map Select
+
+This bit controls which Background Map is used to determine the tile numbers of the tiles displayed in the Background layer. If it is set to 1, the background map located at $9C00-$9FFF is used, otherwise it uses the one at $9800-$9BFF.
+
+### LCDC.2 - Sprite Size
+
+As mentioned in the description of sprites above, there is a certain option which can enable "Tall Sprite Mode". Setting this bit to 1 does so. In this mode, each sprite consists of two tiles on top of each other rather than one. The tile numbers for these are calculated as follows:
+
+To calculate the tile number of the top tile, the tile number in the OAM entry is used and the least significant bit is set to 0. The tile number of the bottom tile is calculated by setting the least significant bit to 1. 
+
+**Example:** The Sprite Size bit is set to 1, enabling 1x2 Tile sprites. The PPU handles the OAM entry of a sprite with the tile number `0x81`. In this case, it would set the least significant bit to 0 for the top tile, resulting in the tile number `0x80`. The bottom tile would have the least significant bit set to 1, resulting in the tile number `0x81`. The exact same tile numbers would also be used if the OAM entry had a tile number of `0x80`, as they only differ in the least significant bit, which is replaced by the PPU anyway.
+
+### LCDC.1 - Sprite Enable
+
+This bit controls whether or not sprites are rendered at all. Setting this bit to 0 hides all sprites, otherwise they are rendered as normal.
+
+### LCDC.0 - BG/Window Enable
+
+This bit controls whether or not Background and Window tiles are drawn. If it is set to 0, no Background or Window tiles are drawn and all pixels are replaced by white pixels. The only exception to this are sprites, as they are unaffected.
+
+**Note:** This bit has different functionality on the Gameboy Color.
