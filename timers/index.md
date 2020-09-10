@@ -1,4 +1,4 @@
-[<< Back to Main Page](../)
+[<< Back to Last Page](../)
 
 # The Timers
 
