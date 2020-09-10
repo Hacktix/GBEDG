@@ -15,6 +15,16 @@
   * [Tile Data](#tile-data)
   * [Background Maps](#background-maps)
   * [OAM Memory](#oam-memory)
+- [PPU Registers](#ppu-registers)
+  * [LCD Control Register (LCDC : $FF40)](#lcd-control-register--lcdc----ff40-)
+    + [LCDC.7 - LCD Display Enable](#lcdc7---lcd-display-enable)
+    + [LCDC.6 - Window Tile Map Select](#lcdc6---window-tile-map-select)
+    + [LCDC.5 - Window Display Enable](#lcdc5---window-display-enable)
+    + [LCDC.4 - Tile Data Select](#lcdc4---tile-data-select)
+    + [LCDC.3 - BG Tile Map Select](#lcdc3---bg-tile-map-select)
+    + [LCDC.2 - Sprite Size](#lcdc2---sprite-size)
+    + [LCDC.1 - Sprite Enable](#lcdc1---sprite-enable)
+    + [LCDC.0 - BG/Window Enable](#lcdc0---bg-window-enable)
 
 # An Introduction
 
