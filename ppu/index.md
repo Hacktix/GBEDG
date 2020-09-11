@@ -175,3 +175,27 @@ This bit controls whether or not sprites are rendered at all. Setting this bit t
 This bit controls whether or not Background and Window tiles are drawn. If it is set to 0, no Background or Window tiles are drawn and all pixels are drawn as white (Color 0). The only exception to this are sprites, as they are unaffected.
 
 **Note:** This bit has different functionality on the Gameboy Color.
+
+## LCD Status Register (STAT : $FF41)
+
+The STAT register contains both information-bits which allow the CPU to determine the status of the PPU, as well as bits which affect the interrupt trigger behavior of the PPU. The following is an overview over the function of each bit:
+
+```
+Bit 7   Unused (Always 1)
+Bit 6   LYC=LY STAT Interrupt Enable
+         Setting this bit to 1 enables the "LYC=LY condition" to trigger a STAT interrupt.
+Bit 5   Mode 2 STAT Interrupt Enable
+         Setting this bit to 1 enables the "mode 2 condition" to trigger a STAT interrupt.
+Bit 4   Mode 1 STAT Interrupt Enable
+         Setting this bit to 1 enables the "mode 1 condition" to trigger a STAT interrupt.
+Bit 3   Mode 0 STAT Interrupt Enable
+         Setting this bit to 1 enables the "mode 0 condition" to trigger a STAT interrupt.
+Bit 2   Coincidence Flag
+         This bit is set by the PPU if the value of the LY register is equal to that of the LYC register.
+Bit 1-0 PPU Mode
+         These two bits are set by the PPU depending on which mode it is in.
+          * 0 : H-Blank
+          * 1 : V-Blank
+          * 2 : OAM Scan
+          * 3 : Drawing
+```
