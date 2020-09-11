@@ -15,8 +15,16 @@
   * [Tile Data](#tile-data)
   * [Background Maps](#background-maps)
   * [OAM Memory](#oam-memory)
+  * [The Concept of Scanlines](#the-concept-of-scanlines)
+  * [The Concept of PPU Modes](#the-concept-of-ppu-modes)
+    + [OAM Scan (Mode 2)](#oam-scan--mode-2-)
+    + [Drawing (Mode 3)](#drawing--mode-3-)
+    + [H-Blank (Mode 0)](#h-blank--mode-0-)
+    + [V-Blank (Mode 1)](#v-blank--mode-1-)
+    + [Timing Diagram](#timing-diagram)
 - [PPU Registers](#ppu-registers)
   * [LCD Control Register (LCDC : $FF40)](#lcd-control-register--lcdc----ff40-)
+  * [LCD Status Register (STAT : $FF41)](#lcd-status-register--stat----ff41-)
 
 # An Introduction
 
