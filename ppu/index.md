@@ -74,6 +74,18 @@ The Window is the same as the Background in that it is another 32x32 tile grid w
 
 ![grid_win](./grid_win.png)
 
+#### The WX and WY Registers
+
+The WY register is the more simple of the two. Using the memory address $FF4A, the program can set the Y-Position at which the top border of the window should be placed, 0 meaning the very top.
+
+The WX register has a few oddities. In order to place the window at the far left border of the screen, the value 7 must be written to the register. Values lower than 7 cause strange edge cases to occur, which are yet to be documented here. However, for games that use WX values below 7, these can mostly be ignored.
+
+Effectively, the horizontal position at which the window should be displayed can be calculated using `WX - 7`. A WX value of 6 for example (ignoring the aforementioned edge cases) puts the leftmost column of pixels off screen and starts rendering the window at the second column, as demonstrated here:
+
+![grid_win_wx06](./grid_win_wx06.png)
+
+(**Note:** The graphic above is not to scale.)
+
 ### Sprites
 
 Sprites are effectively just 8x8 (or, if certain options are set, 8x16) pixel tiles which are not limited by the background/window grid. Sprite data is stored in the OAM section of memory which can fit up to 40 sprites.
