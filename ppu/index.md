@@ -11,6 +11,7 @@
   * [Display Layers](#display-layers)
     + [The Background](#the-background)
     + [The Window](#the-window)
+      + [The WX and WY Registers](#the-wx-and-wy-registers)
     + [Sprites](#sprites)
   * [Tile Data](#tile-data)
   * [Background Maps](#background-maps)
