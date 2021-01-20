@@ -97,9 +97,9 @@ Sprites are effectively just 8x8 (or, if certain options are set, 8x16) pixel ti
 
 Graphics data encoded in the 2BPP format (explained above) is stored in VRAM at addresses $8000-$97FF and is usually referred to by so-called "Tile Numbers". As each tile takes up 16 bytes of memory, a "Tile Number" is essentially just an index of a 16-byte-block within this section of VRAM. However, there are two different addressing methods the PPU uses:
 
-The **8000 method** uses $8000 as a base pointer and adds `(TILE_NUMBER * 16)` to it, whereas `TILE_NUMBER` is an unsigned 8-bit integer. Thus, the Tile Number `0` would refer to address $8000, `1` would refer to $8010, `2` to $8020 and so on.
+The **8000 method** uses $8000 as a base pointer and adds `(TILE_NUMBER * 16)` to it, where `TILE_NUMBER` is an unsigned 8-bit integer. Thus, the Tile Number `0` would refer to address $8000, `1` would refer to $8010, `2` to $8020 and so on.
 
-The **8800 method** uses $9000 as a base pointer and adds `(SIGNED_TILE_NUMBER * 16)` to it, whereas `SIGNED_TILE_NUMBER` is a signed 8-bit integer. Thus, the tile number `0` would refer to address $9000, `1` would refer to $9010, `2` to $9020 and so on. However, `0xFF` would refer to $8FF0, `0xFE` to $8FE0 and so on.
+The **8800 method** uses $9000 as a base pointer and adds `(SIGNED_TILE_NUMBER * 16)` to it, where `SIGNED_TILE_NUMBER` is a signed 8-bit integer. Thus, the tile number `0` would refer to address $9000, `1` would refer to $9010, `2` to $9020 and so on. However, `0xFF` would refer to $8FF0, `0xFE` to $8FE0 and so on.
 
 Which of these addressing methods is used depends on bit 4 of the LCDC register, which will be explained later on as well.
 
