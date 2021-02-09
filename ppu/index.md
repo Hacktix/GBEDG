@@ -53,7 +53,7 @@ While the screen has a resolution of 160x144 pixels, pixels cannot be "written t
 
  Since the original DMG Gameboy only supports a palette of 4 different colors, 2 bits are needed to store color data for a single pixel. Hence, the Gameboy stores graphics data in a format commonly referred to as "2BPP", which stands for "2 bits per pixel".
 
-In the Gameboy's 2BPP format, 2 bytes make up a row of 8 pixels. Each bit of the first byte is combined with the bit at the same position of the second byte to calculate the color number, as shown here, using `0xC3 0xA5` as example data:
+In the Gameboy's 2BPP format, 2 bytes make up a row of 8 pixels. Each bit of the first byte is combined with the bit at the same position of the second byte to calculate the color number, as shown here, using `0xA5 0xC3` as example data:
 
 ![gb_2bpp](./gb_2bpp.png)
 
