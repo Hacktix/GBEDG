@@ -265,3 +265,33 @@ Bit 1-0 PPU Mode
           * 2 : OAM Scan
           * 3 : Drawing
 ```
+
+### STAT.6 - LYC=LY STAT Interrupt Enable
+
+This bit (similarly to bits 5 through 3) acts as a "condition enabler" for firing STAT interrupts. This specific bit allows STAT interrupts to be triggered by a comparison of the LY register (number of current scanline) with the LYC register ($FF45, explained later on). If the values are equal, a STAT interrupt is triggered.
+
+**Note:** This interrupt is only triggered once per scanline due to STAT IRQ Blocking explained later on.
+
+### STAT.5-3 - PPU Mode STAT Interrupt Enable
+
+Like bit 6, the bits 5 through 3 also act as "condition enablers" for the STAT interrupt. Specifically, they allow a STAT interrupt to be triggered whenever the PPU enters a specific mode, as described in the following table:
+
+| **Bit** | **PPU Mode**      |
+| ------- | ----------------- |
+| STAT.5  | Mode 2 (OAM Scan) |
+| STAT.4  | Mode 1 (VBlank)   |
+| STAT.3  | Mode 0 (HBlank)   |
+
+### STAT.2 - Coincidence Flag
+
+This bit is updated by the PPU whenever a new scanline is started or the contents of the LYC register change. If LY=LYC, the bit is set to 1, otherwise it is set to zero. It cannot be overwritten by the CPU, as it is read-only.
+
+### STAT.1-0 - PPU Mode
+
+The bottom two bits of the STAT register are read-only to the CPU and are updated by the PPU each time it switches between modes. (Ref. [PPU Mode Timing](#timing-diagram)) This is important for some games, as they continuously check the value of these bits rather than using interrupts do determine the mode the PPU is in.
+
+### STAT IRQs and Blocking
+
+STAT Interrupts are triggered conditionally, based on the state of bits 6-3 of the STAT register. If any of the selected conditions is met, bit 1 of the Interrupt Flag register (IF) is set. However, as long as at least one of the selected conditions is met, no further STAT interrupts can be fired. This is referred to as "STAT IRQ Blocking".
+
+**Example:** The LYC register is set to the value `0x10` and the LY=LYC STAT Interrupt condition is enabled. As soon as LY=`0x10`, the STAT interrupt is fired. While the PPU is on the same scanline, the Mode 0 STAT Interrupt condition is enabled. Usually, this would cause another STAT interrupt towards the end of the scanline as soon as the PPU switches to mode 0. However, since the LY=LYC condition is still met, the interrupt is not fired, as there is no transition from "no conditions met" to "any condition met". On the next scanline the LY=LYC condition would not be met anymore, therefore the interrupt would fire there as soon as the PPU switches to mode 0.
