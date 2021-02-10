@@ -18,3 +18,5 @@ This section is currently under construction. Meanwhile, feel free to check out 
 [Timers - Explained in Detail](timers)
 
 [The PPU](ppu)
+
+[Direct Memory Access (DMA)](./dma)
