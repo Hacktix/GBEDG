@@ -65,7 +65,7 @@ Reading from a memory address between $4000 and $7FFF, no matter what state the 
 
 ### $A000 - $BFFF (RAM Bank 0-3)
 
-Reading from a memory address between $4000 and $7FFF returns a value from external RAM if it is enabled. If it is not, 0xFF is read.
+Reading from a memory address between $A000 and $BFFF returns a value from external RAM if it is enabled. If it is not, 0xFF is read.
 
 The address in external RAM which is read from depends on the total RAM size as well as the RAM bank number. If the total RAM size is either 2KB or 8KB, the address is simply `(ADDRESS - 0xA000) mod RAM_SIZE`.
 
