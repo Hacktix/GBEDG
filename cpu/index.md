@@ -10,7 +10,6 @@
     + [Initial Register Values](#initial-register-values)
   * [Additional Flags](#additional-flags)
     + [IME (Interrupt Master Enable Flag)](#ime--interrupt-master-enable-flag-)
-    + [STATE](#state)
 
 ## General
 The DMG Gameboy uses an 8-bit Sharp LR35902 CPU, which is a sort of "modified version" of the Z80, intended to fit the lower requirements of a handheld console by using a reduced instruction set.
@@ -52,6 +51,3 @@ The initial values of each register vary between each system types and model. Th
 ## Additional Flags
 ### IME (Interrupt Master Enable Flag)
 The IME is a CPU-internal flag which determines whether or not interrupts are enabled. Interrupts are enabled if this flag is set, however, there is a second register mapped to memory which differentiates between various types of interrupts and allows for enabling/disabling each individually.
-
-### STATE
-This is mostly relevant for emulator development and is not (?) present in actual hardware. The CPU can be in different states, most notably the default execution state, a HALT state or a STOP state. These will be elaborated on later on in this documentation.
