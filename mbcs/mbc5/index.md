@@ -55,6 +55,22 @@ Reading from a memory address between $A000 and $BFFF returns the byte at `0x200
 
 If the cartridge features a rumble motor (indicated by an MBC type identifier of $1C, $1D or $1E), writes to the memory region $4000 - $5FFF are handled slightly differently. Bit 3 of the value written to this memory region is mapped to the rumble motor controller rather than the RAM bank selector. This means that RAM banks which would require bit 3 to be set cannot be accessed when a rumble motor is installed.
 
-If bit 3 is set, the rumble motor activates until the bit is reset again. (TODO: Confirm this is true)
+If bit 3 is set, the rumble motor activates until the bit is reset again.
 
-Pokemon Pinball features a setting for "Rumble Intensity", allowing for "light" and "strong" rumble. On the original hardware, these effects are achieved by repeatedly turning rumble on and off. The higher the frequency at which rumble is toggled, the more "intense" the rumble.
+### Hardware Schematics
+
+In hardware, the rumble motor is part of a separate circuit. This circuit is closed by a transistor, which can be enabled by setting the `AA16` pin to high (which corresponds to bit 3 of the RAM Bank select section). The following is a schematic displaying a basic MBC5 rumble setup (based on [Jeff Frohwein's GameBoy Tech Page](http://www.devrs.com/gb/files/rumble.gif)):
+
+![schematic_rumble](./schematic_rumble.png)
+
+### Example Usage in Pokémon Pinball
+
+Pokemon Pinball features a setting for "Rumble Intensity", allowing for "light" and "strong" rumble. On the original hardware, these effects are achieved by repeatedly turning rumble on and off. The longer the motor is turned on before bit 3 is reset to 0 the more "intense" the rumble effect feels.
+
+Using the "light" rumble option, the following wave is observed on the rumble motor circuit, showing the motor being on for an average of ~9.4ms before being turned off again:
+
+![wave_rumble_medium](./wave_rumble_medium.png)
+
+The "intense" rumble option results in the following waveform, which shows the motor being on for an average of ~17.5ms before being turned off again:
+
+![wave_rumble_intense](./wave_rumble_intense.png)
