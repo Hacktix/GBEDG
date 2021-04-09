@@ -32,8 +32,9 @@ Writing to a memory address between $2000 and $3FFF will set the ROM Bank Number
 | 16 Banks (256KB) | 0b00001111  |
 | 8 Banks (128KB)  | 0b00000111  |
 | 4 Banks (64KB)   | 0b00000011  |
+| 2 Banks (32KB)   | 0b00000001  |
 
-The written value is ANDed with the bitmask according to the table above. If the result of this AND operation is zero, the ROM bank value is set to 1, otherwise it is set to the result of the AND operation.
+The written value is ANDed with the bitmask according to the table above. If the written value (NOT the AND result) is zero, the ROM bank value is set to 1, otherwise it is set to the result of the AND operation. (In the case of a 32KB ROM, the ROM bank value will always be set to 1)
 
 ### $4000 - $5FFF (RAM Bank)
 
