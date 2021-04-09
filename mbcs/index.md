@@ -8,6 +8,7 @@ Memory Bank Controllers (most commonly abbreviated to MBCs) are pieces of hardwa
 
 * [MBC1](mbc1)
 * [MBC2](mbc2)
+* [MBC3](mbc3)
 * [MBC5](mbc5)
 
 ## Table of Contents
