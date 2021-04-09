@@ -73,7 +73,7 @@ The RTC features a total of 5 registers, each with it's own "Register ID" which 
 | $09             | RTC M             | 6-bit register in charge of counting Minutes                 |
 | $0A             | RTC H             | 5-bit register in charge of counting Hours                   |
 | $0B             | RTC DL            | 8-bit register representing the lower 8 bits of the total 9-bit Day Counter |
-| $0C             | RTC DH            | Bit 0 \| Bit 9 of the Day Counter<br />Bit 6 \| Timer Halt Bit<br />Bit 7 \| Day Counter Carry Bit |
+| $0C             | RTC DH            | Bit 0 \| Bit 8 of the Day Counter<br />Bit 6 \| Timer Halt Bit<br />Bit 7 \| Day Counter Carry Bit |
 
 ### RTC Clock Ticks
 
