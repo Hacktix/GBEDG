@@ -179,6 +179,100 @@ The following diagram (a simplified version of the original from the Gameboy Pan
 
 
 
+# The Pixel FIFO
+
+The Gameboy doesn't render a whole frame or even just a whole scanline all at the same time. Instead, individual pixels are pushed to the LCD one by one. In order to accomplish this, the so-called Pixel FIFO is used. This is effectively a combination of two "shift registers" which can each hold data of up to 8 pixels. Each pixel stored in the FIFO needs to keep track of the following properties:
+
+* **Color:** The color number (IGNORING the palette, this value is the color value from the tile data)
+* **Palette:** OBP0 / OBP1 for DMG, a value between 0 and 7 on CGB
+* **Sprite Priority:** Only relevant for Sprites on CGB
+* **Background Priority:** Only relevant for Sprites, keeps the value of Bit 7 (OBJ-to-BG Priority) of the Attributes byte of the sprite
+
+One of these 8-pixel Shift Registers is referred to as the "Background FIFO", as it's loaded with background/window data pixels. The other is the Sprite FIFO, which is in charge of buffering Sprite pixels. The pixels from both of these registers are merged during the process of being shifted out to the LCD, but this process will be explained in more detail later.
+
+## OAM Scanning
+
+At the start of each scanline, the PPU scans OAM for sprites it has to render on the current scanline. The details on this operation are described in the [OAM Scan (Mode 2)](#oam-scan-mode-2) section. The buffer in which the "to-render" sprites are stored will be referred to as the "Sprite Buffer".
+
+## Background Pixel Fetching
+
+The component responsible for loading the FIFO registers with data is the Pixel Fetcher. This fetcher is continuously active throughout PPU Mode 3 and keeps supplying the FIFO with new pixels to shift out. The process of fetching pixels is split up into 4 different steps, which take 2 T-Cycles each to complete:
+
+* **1) Fetch Tile No.**:
+  During the first step the fetcher fetches and stores the tile number of the tile which should be used. Which Tilemap is used depends on whether the PPU is currently rendering Background or Window pixels and on the bits 3 and 5 of the LCDC register. Additionally, the address which the tile number is read from is offset by the fetcher-internal X-Position-Counter, which is incremented each time the last step is completed. The value of `SCX / 8` is also added if the Fetcher is not fetching Window pixels. In order to make the wrap-around with SCX work, this offset is ANDed with `0x1f`. An offset of `32 * (((LY + SCY) & 0xFF) / 8)` is also added if background pixels are being fetched, otherwise, if window pixels are being fetched, this offset is determined by `32 * (WINDOW_LINE_COUNTER / 8)`. The Window Line Counter is a fetcher-internal variable which is incremented each time a scanline had any window pixels on it and reset when entering VBlank mode.
+
+  **Note:** The sum of both the X-POS+SCX and LY+SCY offsets is ANDed with `0x3ff` in order to ensure that the address stays within the Tilemap memory regions.
+
+* **2) Fetch Tile Data (Low):**
+  Using the Tile Number from the previous step the fetcher now fetches the first byte of tile data (with an offset of `2 * ((LY + SCY) mod 8)`) and stores it. The address which the tile data is read from depends on bit 4 of the LCDC register.
+
+  **Note:** While fetching window pixels, the offset of `2 * ((LY + SCY) mod 8)` is replaced with `2 * (WINDOW_LINE_COUNTER mod 8)`.
+
+* **3) Fetch Tile Data (High):**
+  This step is the same as the previous, however, the next byte after the previously read address (containing the second byte of Tile Data) is read and stored.
+
+  **Note:** The first time the background fetcher completes this step on a scanline the status is fully reset and operation restarts at Step 1. Due to the 3 steps up to this point taking up 6 T-cycles in total, and the same steps repeating again taking the same amount of time, this causes a delay of 12 T-cycles before the background FIFO is first filled with pixel data.
+
+* **4) Push to FIFO:**
+  During this step the previously fetched pixel data is decoded into actual pixels (containing all the attributes mentioned previously) and loaded into the corresponding FIFO, depending on whether the Fetcher is currently fetching Background/Window or Sprite pixels.
+
+  **Note:** While fetching background pixels, this step is only executed if the background FIFO is fully empty. If it is not, this step repeats every cycle until it succeeds. Since all steps up to this point usually only take 6 T-cycles, and the PPU takes 8 T-cycles to shift out all 8 pixels, this step usually has to restart twice before succeeding.
+
+## Pushing Pixels to the LCD
+
+During each cycle, after clocking the Pixel Fetchers, the PPU attempts to push a pixel to the LCD, which can only be done if there are pixels in the background FIFO. If the Sprite FIFO contains any pixels, a sprite pixel is shifted out and "merged" with the background pixel. The details of this process will be explained later. The merged pixel is then displayed at the current scanline and at the current X-position, which the PPU keeps track of, which is incremented after the pixel is shifted out. If the background FIFO is empty, nothing happens here.
+
+![Basic FIFO Operation](./fifo_basic.png)
+
+### SCX at a Sub-Tile-Layer
+
+The SCX register makes it possible to scroll the background on a per-pixel basis rather than a per-tile one. While the per-tile-part of horizontal scrolling is handled within the fetching process, the remaining scrolling is actually done at the start of a scanline while shifting pixels out of the background FIFO. `SCX mod 8` pixels are discarded at the start of each scanline rather than being pushed to the LCD, which is also the cause of PPU Mode 3 being extended by `SCX mod 8` cycles.
+
+![fifo_scx_per_pixel](./fifo_scx_per_pixel.png)
+
+## Sprite Fetching
+
+If the X-Position of any sprite in the sprite buffer is less than or equal to the current Pixel-X-Position + 8, a sprite fetch is initiated. This temporarily suspends the background fetcher while keeping all it's values intact, the pixel shifter which pushes pixels to the LCD is also suspended. The Sprite Fetcher works very similarly to the background fetcher, but has a total of 5 steps:
+
+* **1) Fetch Tile No.:**
+  Same as the first Background Fetcher step, however, the tile number is simply read from the Sprite Buffer rather than VRAM.
+
+* **2) Fetch Tile Data (Low):**
+  Same as the corresponding Background Fetcher step, however, Sprites always use 8000-addressing-mode, so this step is not affected by any LCDC bits.
+
+* **3) Fetch Tile Data (High):**
+  Same as the corresponding Background Fetcher step.
+
+* **4) Sleep:**
+  No operation occurs during the 4th step. (Sprite Mirroring may be applied here?)
+
+* **5) Push to FIFO:**
+  The fetched pixel data is loaded into the FIFO on the first cycle of this step, allowing the first sprite pixel to be rendered in the same cycle. However, the check determining whether new sprite pixels should be rendered is done first, which can cause the PPU to not shift out any pixels at all between two sprite fetches, for example if both sprites have X-values below 8 or both sprites have the same X-value.
+
+  **Note:** During this step only pixels which are actually visible on the screen are loaded into the FIFO. A sprite with an X-value of 8 would have all 8 pixels loaded, while a sprite with an X-value of 7 would only have the rightmost 7 pixels loaded. Additionally, pixels can only be loaded into FIFO slots if there is no pixel in the given slot already. For example, if the Sprite FIFO contains one sprite pixel from a previously fetched sprite, the first pixel of the currently fetched sprite is discarded and only the last 7 pixels are loaded into the FIFO, while the pixel from the first sprite is preserved.
+
+## Pixel Mixing
+
+If, during the shifting process, both the Background and the Sprite FIFO contain at least one pixel, they are both shifted out and compared as follows:
+
+* 1) If the color number of the Sprite Pixel is 0, the Background Pixel is pushed to the LCD.
+* 2) If the BG-to-OBJ-Priority bit is 1 and the color number of the Background Pixel is anything other than 0, the Background Pixel is pushed to the LCD.
+* 3) If none of the above conditions apply, the Sprite Pixel is pushed to the LCD.
+
+## Window Fetching
+
+After each pixel shifted out, the PPU checks if it has reached the window. It does this by checking the following conditions:
+
+* Bit 5 of the LCDC register is set to 1
+* The condition WY = LY has been true at any point in the currently rendered frame.
+* The current X-position of the shifter is greater than or equal to WX - 7
+
+If all of these above conditions apply, Window Fetching starts. The background fetcher state is fully reset to step 1, the fetcher's internal X-Position-Counter is reset to 0 and the background FIFO is cleared. The Background Fetcher continues operation as usual, however, it now takes into account the Window-related LCDC bits and disregards SCX and SCY values completely. The Details of all changes of the fetching process are explained in the Background Pixel Fetching section above.
+
+## Ending a Scanline
+
+As soon as the internal X-Position-Counter reaches 160 (meaning that the 160th pixel had just been pushed) the PPU enters HBlank mode and all fetcher and FIFO operations are stopped. The registers are reset in preparation for the next scanline.
+
 # PPU Registers
 
 ## LCD Control Register (LCDC : $FF40)
