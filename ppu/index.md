@@ -29,6 +29,7 @@
   * [Pushing Pixels to the LCD](#pushing-pixels-to-the-lcd)
     + [SCX at a Sub-Tile-Layer](#scx-at-a-sub-tile-layer)
   * [Sprite Fetching](#sprite-fetching)
+    * [Timing Oddities](#timing-oddities)
   * [Pixel Mixing](#pixel-mixing)
   * [Window Fetching](#window-fetching)
   * [Ending a Scanline](#ending-a-scanline)
@@ -241,7 +242,7 @@ The SCX register makes it possible to scroll the background on a per-pixel basis
 
 ## Sprite Fetching
 
-If the X-Position of any sprite in the sprite buffer is less than or equal to the current Pixel-X-Position + 8, a sprite fetch is initiated. This temporarily suspends the background fetcher while keeping all it's values intact, the pixel shifter which pushes pixels to the LCD is also suspended. The Sprite Fetcher works very similarly to the background fetcher, but has a total of 5 steps:
+If the X-Position of any sprite in the sprite buffer is less than or equal to the current Pixel-X-Position + 8, a sprite fetch is initiated. This resets the Background Fetcher to step 1 and temporarily pauses it, the pixel shifter which pushes pixels to the LCD is also suspended. The Sprite Fetcher works very similarly to the background fetcher:
 
 * **1) Fetch Tile No.:**
   Same as the first Background Fetcher step, however, the tile number is simply read from the Sprite Buffer rather than VRAM.
@@ -252,13 +253,20 @@ If the X-Position of any sprite in the sprite buffer is less than or equal to th
 * **3) Fetch Tile Data (High):**
   Same as the corresponding Background Fetcher step.
 
-* **4) Sleep:**
-  No operation occurs during the 4th step. (Sprite Mirroring may be applied here?)
-
-* **5) Push to FIFO:**
+* **4) Push to FIFO:**
   The fetched pixel data is loaded into the FIFO on the first cycle of this step, allowing the first sprite pixel to be rendered in the same cycle. However, the check determining whether new sprite pixels should be rendered is done first, which can cause the PPU to not shift out any pixels at all between two sprite fetches, for example if both sprites have X-values below 8 or both sprites have the same X-value.
 
   **Note:** During this step only pixels which are actually visible on the screen are loaded into the FIFO. A sprite with an X-value of 8 would have all 8 pixels loaded, while a sprite with an X-value of 7 would only have the rightmost 7 pixels loaded. Additionally, pixels can only be loaded into FIFO slots if there is no pixel in the given slot already. For example, if the Sprite FIFO contains one sprite pixel from a previously fetched sprite, the first pixel of the currently fetched sprite is discarded and only the last 7 pixels are loaded into the FIFO, while the pixel from the first sprite is preserved.
+
+### Timing Oddities
+
+When a sprite fetch is initiated the Background Fetcher is reset to step 1 and paused, and it's only able to restart fetching background pixels once the sprite data has been fetched and loaded into the Sprite FIFO. This causes the PPU to behave differently depending on how many pixels are queued up in the Background FIFO before the sprite fetch is initiated.
+
+The PPU instantly starts pushing pixels to the LCD after the sprite fetch is done, and the Background Fetcher is restarted. However, fetching 8 background pixels takes 6 T-cycles, the same amount of time it would take for 6 pixels to be shifted out. If there are less than 6 pixels remaining in the Background FIFO when the sprite fetch is done, the PPU will have to wait for the Background Fetcher to fetch new pixels and be idle while doing so. The delay applied here is equal to `6 - REMAINING_PIXEL_COUNT`, with `REMAINING_PIXEL_COUNT` being the number of pixels in the Background FIFO when the sprite fetch finishes.
+
+The following diagram shows the timing of an example case of a sprite fetch with a sprite at X = 68 (LCD Position 60). As `60 mod 8 = 4`, the Background FIFO contains 4 pixels before the Sprite Fetch is started.
+
+![fifo_sprite_fetch_timing](./fifo_sprite_fetch_timing.png)
 
 ## Pixel Mixing
 
