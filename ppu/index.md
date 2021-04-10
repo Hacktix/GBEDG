@@ -282,6 +282,12 @@ If all of these above conditions apply, Window Fetching starts. The background f
 
 As soon as the internal X-Position-Counter reaches 160 (meaning that the 160th pixel had just been pushed) the PPU enters HBlank mode and all fetcher and FIFO operations are stopped. The registers are reset in preparation for the next scanline.
 
+## Timing Diagram
+
+The following diagram shows the timings of a few very basic cases during PPU Mode 3. (Not to scale, of course)
+
+![fifo_timing](./fifo_timing.png)
+
 # PPU Registers
 
 ## LCD Control Register (LCDC : $FF40)
