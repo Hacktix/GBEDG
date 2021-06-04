@@ -20,3 +20,5 @@ This section is currently under construction. Meanwhile, feel free to check out 
 [The PPU](ppu)
 
 [Direct Memory Access (DMA)](./dma)
+
+[Common Bugs & Issues](./bugs)
