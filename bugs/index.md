@@ -4,6 +4,14 @@
 
 The following is a list of common bugs that occur when starting up games on in-development emulators and potential sources these issues could be caused by. If you encounter any bugs while developing your own emulator that have not been listed on this page, feel free to contact me on Discord (Optix™#3264) and I'll add it.
 
+## Jump to a Specific Game
+
+  * [Bomberman GB](#bomberman-gb)
+  * [Dr. Mario](#dr-mario)
+  * [Pokémon Red/Blue Version](#pokemon-redblue-version)
+  * [Tetris](#tetris)
+  * [The Legend of Zelda: Link's Awakening](#the-legend-of-zelda-links-awakening)
+
 ## Bomberman GB
 
 ### Unable to move left/right
@@ -20,7 +28,7 @@ Dr. Mario is, right after Tetris, one of the most common games to attempt to boo
 
 Seeing this exact image as the title screen of Dr. Mario is a common misunderstanding of the "8800 Addressing Mode" of the PPU, using the address `$8800` as the base address for tile data rather than the correct `$9000` address.
 
-## Pokémon Red/Blue Version
+## Pokemon Red/Blue Version
 
 ### Black Box on Title Screen
 
