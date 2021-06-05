@@ -42,6 +42,14 @@ Instead of a proper Pokemon, the following black box may appear on the title scr
 
 This is most likely an issue with the MBC implementations. Specifically, this occurs when reading from the SRAM section ($A000-$BFFF) returns `$FF`.
 
+### Corrupted ED-Tile on Name Input Screen
+
+When entering the Name Input Screen in the beginning of Pokemon Red/Blue, the following corrupted tile may be seen:
+
+![pokemon_baded](./pokemon_baded.png)
+
+This is related to a faulty MBC3 implementation. The game attempts to set the ROM bank number to zero by writing to memory range $4000-$7FFF, however, the MBC should map ROM bank 1 instead of 0.
+
 ## Tetris
 
 ### Flickering Copyright Notice
