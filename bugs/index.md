@@ -30,6 +30,18 @@ A very common issue for newly developed emulators is flickering on the following
 
 This is most likely caused by the I/O register at memory address `$FF00` (which is the Joypad Register) returning zero when read from. This is due to the fact that the bit values of the Joypad registers are inverted - 0 means "pressed" while 1 means "not pressed". Tetris has a "reset" button combo which resets the game fully to the copyright notice screen if A+B+START+SELECT are all pressed. If reading from memory address `$FF00` returns zero, the game assumes all these buttons are pressed and resets, causing the flickering.
 
+### Non-random Blocks
+
+Another fairly common beginner issue with Tetris is a lack of randomization for the block shapes that drop down ingame, such as the following:
+
+![tetris_badrng](./tetris_badrng.png)
+
+This is most likely due to an issue with the DIV register ($FF04), as it's used to "randomize" the shapes. In-development emulators may simply map this address to the value zero, resulting in the game always dropping 2x2 blocks. Other values may lead to other shapes being dropped.
+
+### Crash when Starting Game or Demo
+
+Tetris may crash in some way when attempting to start the game or waiting in the main menu for the demo to play. These crashes may look different depending on a few factors, ranging from a visually glitched main menu to a completely blank screen. However, this is most likely due to the emulator letting the game change values in ROM by writing to them. Specifically, Tetris writes a value to the memory address `$2000`, which should simply be ignored.
+
 ## The Legend of Zelda: Link's Awakening
 
 ### Broken Item Bar
