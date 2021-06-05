@@ -28,6 +28,10 @@ Dr. Mario is, right after Tetris, one of the most common games to attempt to boo
 
 Seeing this exact image as the title screen of Dr. Mario is a common misunderstanding of the "8800 Addressing Mode" of the PPU, using the address `$8800` as the base address for tile data rather than the correct `$9000` address.
 
+### Blank Screen when Starting Game
+
+When attempting to start a game of Dr. Mario, the title and mode selection screens may work as intended, however, as soon as the game is supposed to actually start up, it may freeze on a blank white screen. This is most likely an issue with the PPU STAT register (`$FF41`), specifically with the PPU mode bits. Dr. Mario turns off the LCD and runs an infinite loop until the mode bits read zero, which should be the case immediately after turning off the LCD, as this resets the PPU mode to zero.
+
 ## Pokemon Red/Blue Version
 
 ### Black Box on Title Screen
@@ -69,3 +73,11 @@ When starting The Legend of Zelda: Link's Awakening, the bar at the bottom of th
 ![zelda_links_awakening_window](./zelda_links_awakening_window.png)
 
 This is most likely a problem with handling values of the WX register (`$FF4B`) that are below 7. The value of the WX register is often defined as "Window X Position plus 7", however, Link's Awakening sets the value of WX to 6, which new emulators may incorrectly evaluate to 255 by subtracting 7 while handling the value as an unsigned 8 bit integer. Instead, signed values should be used, as WX values below 7 should shift the window off the screen to the left.
+
+### Walking Animation without Movement
+
+While technically not a major issue, many emulators don't filter out "impossible" inputs, such as pressing left and right at the same time on the Joypad. This can cause the following issue in The Legend of Zelda: Link's Awakening:
+
+![zelda_links_awakening_impossible_input](./zelda_links_awakening_impossible_input.gif)
+
+This doesn't break the game itself, but could be a bit uncomfortable for players to deal with when accidentally pressing two opposing D-Pad buttons at the same time. Simply filtering out button presses of Left-Right and Up-Down at the same time is enough to fix this issue.
