@@ -7,11 +7,9 @@ This documentation is intended to assist with development of emulators for the o
 
 This section is currently under construction. Meanwhile, feel free to check out the Quick Reference below for articles on specific topics.
 
+[**Step 1:** Basic Emulation Concepts](concepts)
+
 ## Quick Reference
-
-[Hardware Overview](hardware)
-
-[CPU Structure](cpu)
 
 [Memory Bank Controllers](mbcs)
 
