@@ -32,27 +32,28 @@ Seeing this exact image as the title screen of Dr. Mario is a common misundersta
 
 When attempting to start a game of Dr. Mario, the title and mode selection screens may work as intended, however, as soon as the game is supposed to actually start up, it may freeze on a blank white screen. This is most likely an issue with the PPU STAT register (`$FF41`), specifically with the PPU mode bits. Dr. Mario turns off the LCD and runs an infinite loop until the mode bits read zero, which should be the case immediately after turning off the LCD, as this resets the PPU mode to zero.
 
-## Pokemon Red/Blue Version
+## Pokémon Red/Blue Version
 
 ### Black Box on Title Screen
 
-Instead of a proper Pokemon, the following black box may appear on the title screen of both the Red and Blue Version of the Pokémon Games:
+Instead of a proper Pokémon, the following black box may appear on the title screen of both the Red and Blue Version of the Pokémon Games:
 
 ![pokemon_black_box](./pokemon_black_box.png)
 
-This is most likely an issue with the MBC implementations. Specifically, this occurs when reading from the SRAM section ($A000-$BFFF) returns `$FF`.
+This is most likely an issue with a faulty MBC implementation. Specifically, this bug occurs when SRAM is unimplemented, as the game uses SRAM as a decompression buffer for sprite data. 
+(SRAM being used as a decompression buffer is precisely why encountering MISSINGNO. or other glitch Pokémon destroys Hall of Fame data, as sprites of glitch Pokémon are usually very large and overflow the sprite decompression buffer located right before Hall of Fame data in SRAM. )
 
 ### Corrupted ED-Tile on Name Input Screen
 
-When entering the Name Input Screen in the beginning of Pokemon Red/Blue, the following corrupted tile may be seen:
+When entering the Name Input Screen in the beginning of Pokémon Red/Blue, the following corrupted tile may be seen:
 
 ![pokemon_baded](./pokemon_baded.png)
 
 This is related to a faulty MBC3 implementation. The game attempts to set the ROM bank number to zero by writing to memory range $4000-$7FFF, however, the MBC should map ROM bank 1 instead of 0.
 
-### Freeze in Pokemon Center
+### Freeze in Pokémon Center
 
-When trying to heal your Pokemon in a Pokemon Center, the game may freeze on the following frame:
+When trying to heal your Pokémon in a Pokémon Center, the game may freeze on the following frame:
 
 ![pokemon_pokecenter_stuck](./pokemon_pokecenter_stuck.png)
 
