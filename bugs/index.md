@@ -8,7 +8,7 @@ The following is a list of common bugs that occur when starting up games on in-d
 
   * [Bomberman GB](#bomberman-gb)
   * [Dr. Mario](#dr-mario)
-  * [Pokémon Red/Blue Version](#pokemon-redblue-version)
+  * [Pokémon Red/Blue Version](#pokémon-redblue-version)
   * [Tetris](#tetris)
   * [The Legend of Zelda: Link's Awakening](#the-legend-of-zelda-links-awakening)
 
