@@ -50,6 +50,14 @@ When entering the Name Input Screen in the beginning of Pokemon Red/Blue, the fo
 
 This is related to a faulty MBC3 implementation. The game attempts to set the ROM bank number to zero by writing to memory range $4000-$7FFF, however, the MBC should map ROM bank 1 instead of 0.
 
+### Freeze in Pokemon Center
+
+When trying to heal your Pokemon in a Pokemon Center, the game may freeze on the following frame:
+
+![pokemon_pokecenter_stuck](./pokemon_pokecenter_stuck.png)
+
+This is usually an issue with the NR50 register (`$FF24`). Making the register read- and write-able rather than returning a fixed value should fix the issue. Alternatively, a constant return value of 0 should also function as a workaround, but is not necessarily recommended.
+
 ## Tetris
 
 ### Flickering Copyright Notice
