@@ -7,6 +7,7 @@ The following is a list of common bugs that occur when starting up games on in-d
 ## Jump to a Specific Game
 
   * [Bomberman GB](#bomberman-gb)
+  * [Bubble Bobble](#bubble-bobble)
   * [Dr. Mario](#dr-mario)
   * [Pokémon Red/Blue Version](#pokémon-redblue-version)
   * [Tetris](#tetris)
@@ -17,6 +18,14 @@ The following is a list of common bugs that occur when starting up games on in-d
 ### Unable to move left/right
 
 In the Bomberman GB Games (both the Japanese and the US/Europe Versions), you may not be able to move left or right, while vertical movement works just as intended. This is most likely caused by incorrectly handling the case where both the Joypad as well as the Action Buttons are selected in the Joypad register. In this case, both the joypad buttons as well as the action buttons are mapped to their respective bits, and the bit is set to 0 if at least one of the two corresponding buttons is pressed.
+
+## Bubble Bobble
+
+### Blank Screen / Bootloop after Intro Sequence
+
+When starting up Bubble Bobble an Intro Sequence plays, which places the player character in the first stage. However, as soon as the player is placed and gameplay should begin, the game may lock up on a blank screen or simply restart entirely. This is most likely due to a missing delay on the EI instruction, as interrupts are only enabled once the instruction *after* EI has finished execution.
+
+**In-depth Explanation:** On hardware, the execution of the EI instruction overlaps with the fetch of the next instruction, and since instructions cannot be interrupted mid-execution, the next instruction after EI is still executed before interrupts can occur. DI takes effect immediately, as it disables the interrupt check while it is being executed. (Thanks to gekkio for this explanation)
 
 ## Dr. Mario
 
