@@ -100,6 +100,14 @@ When starting The Legend of Zelda: Link's Awakening, the bar at the bottom of th
 
 This is most likely a problem with handling values of the WX register (`$FF4B`) that are below 7. The value of the WX register is often defined as "Window X Position plus 7", however, Link's Awakening sets the value of WX to 6, which new emulators may incorrectly evaluate to 255 by subtracting 7 while handling the value as an unsigned 8 bit integer. Instead, signed values should be used, as WX values below 7 should shift the window off the screen to the left.
 
+### Flickering Line in Intro Sequence
+
+In the opening sequence of The Legend of Zelda: Link's Awakening, specifically the segment where the beach is shown, with the mountain in the background, the first line of pixels may flicker and look a bit off, such as in the following image:
+
+![zelda_links_awakening_introflicker](./zelda_links_awakening_introflicker.png)
+
+This is most likely related to a missing implementation of the "scanline 153 quirk". 4 T-cycles after LY is incremented to 153 it is reset to 0, which also affects LY=LYC STAT interrupts. Note that only the LY register is affected by this quirk, all other functions behave the same way as during any other VBlank-scanline.
+
 ### Walking Animation without Movement
 
 While technically not a major issue, many emulators don't filter out "impossible" inputs, such as pressing left and right at the same time on the Joypad. This can cause the following issue in The Legend of Zelda: Link's Awakening:
