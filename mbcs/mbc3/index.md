@@ -85,11 +85,11 @@ Every 4194304 T-cycles the RTC S register is incremented by 1. If the resulting 
 
 The RTC Data Latch process (described above in the Memory Write $6000 - $7FFF section) "latches" the current state of all RTC registers. This means that it stores the current state in extra registers and makes these registers available to the CPU, while keeping the real RTC registers separate.
 
-If an RTC register is mapped to the $A000 - $BFFF memory region (by writing a Register ID to the $4000 - $5FFF region), reading from this memory region will return the last latched value of the selected register. Unmapped bits (such as the upper 2 bits of the RTC S and RTC M registers) should always read 1. If no latch occurred yet, `0xFF` is read.
+If an RTC register is mapped to the $A000 - $BFFF memory region (by writing a Register ID to the $4000 - $5FFF region), reading from this memory region will return the last latched value of the selected register. Unmapped bits (such as the upper 2 bits of the RTC S and RTC M registers) should always read 0. If no latch occurred yet, `0xFF` is read.
 
 ### Writing to RTC Registers
 
-By mapping RTC registers to the $A000 - $BFFF memory region, the CPU can also write to the selected RTC register. Values written to RTC registers update both the latched value as well as the value of the actual RTC register. All writes are implicitly bitmasked, as not all bits are actually wired up to the corresponding registers. The following bitmasks are applied:
+By mapping RTC registers to the $A000 - $BFFF memory region, the CPU can also write to the selected RTC register. Values written to RTC registers updates the actual RTC register. The latched values are not updated when writing. All writes are implicitly bitmasked, as not all bits are actually wired up to the corresponding registers. The following bitmasks are applied:
 
 | **Register Name** | **Applied Bitmask** |
 | ----------------- | ------------------- |
